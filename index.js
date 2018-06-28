@@ -114,7 +114,6 @@ app.post('/pokemon', (req, response) => {
 });
 
 // EDIT PAGE
-
 app.get('/pokemon/:id/edit', (req, response) =>  {
   let input = req.params.id;
   const queryString = 'SELECT * FROM pokemon WHERE id = $1';
@@ -129,6 +128,26 @@ app.get('/pokemon/:id/edit', (req, response) =>  {
     }
   })
 });
+
+// update that edit
+// use ORDER BY to sort the pokemon, if not the last one showing is the last one updated
+// app.
+
+app.put('/pokemon/:id/edit', (req, response) => {
+  let content = req.body;
+  let input = req.params.id;
+
+  const queryString = 'UPDATE pokemon SET (num, name, img, height, weight) = VALUES($1, $2, $3, $4, $5) WHERE id = $6';
+  const values = [content.num, content.name, content.img, content.height, content.weight, input];
+  pool.query(queryString, values, (err, result) => {
+    if (err) {
+      console.error('query error:', err.stack);
+    }
+    // redirect to home page
+      response.redirect('/pokemon/' + input);
+  });
+});
+
 
 // GET THAT ID OUT
 app.get('/pokemon/:id', (req, response) => {
